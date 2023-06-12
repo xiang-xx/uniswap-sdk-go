@@ -6,7 +6,7 @@ import (
 	"github.com/shopspring/decimal"
 	gorounding "github.com/wadey/go-rounding"
 
-	"github.com/miraclesu/uniswap-sdk-go/constants"
+	"github.com/xiang-xx/uniswap-sdk-go/constants"
 )
 
 type modeHandler func(decimal.Decimal, int) (decimal.Decimal, error)
