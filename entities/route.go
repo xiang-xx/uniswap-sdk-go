@@ -15,14 +15,14 @@ var (
 )
 
 type Route struct {
-	Pairs    []*Pair
+	Pairs    []Pair
 	Path     []*Token
 	Input    *Token
 	Output   *Token
 	MidPrice *Price
 }
 
-func NewRoute(pairs []*Pair, input, output *Token) (*Route, error) {
+func NewRoute(pairs []Pair, input, output *Token) (*Route, error) {
 	if len(pairs) == 0 {
 		return nil, ErrInvalidPairs
 	}

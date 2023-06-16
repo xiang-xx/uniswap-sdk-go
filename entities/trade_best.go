@@ -141,12 +141,12 @@ func SortedInsert(items []*Trade, add *Trade, maxSize int, comparator func(a, b 
  * @param bestTrades used in recursion; the current list of best trades
  */
 func BestTradeExactIn(
-	pairs []*Pair,
+	pairs []Pair,
 	currencyAmountIn *TokenAmount,
 	currencyOut *Token,
 	options *BestTradeOptions,
 	// used in recursion.
-	currentPairs []*Pair,
+	currentPairs []Pair,
 	originalAmountIn *TokenAmount,
 	bestTrades []*Trade,
 ) (sortedItems []*Trade, err error) {
@@ -208,7 +208,7 @@ func BestTradeExactIn(
 
 		// otherwise, consider all the other paths that lead from this token as long as we have not exceeded maxHops
 		if options.MaxHops > 1 && len(pairs) > 1 {
-			pairsExcludingThisPair := make([]*Pair, len(pairs)-1)
+			pairsExcludingThisPair := make([]Pair, len(pairs)-1)
 			copy(pairsExcludingThisPair, pairs[:i])
 			copy(pairsExcludingThisPair[i:], pairs[i+1:])
 			bestTrades, err = BestTradeExactIn(
@@ -245,12 +245,12 @@ func BestTradeExactIn(
  * @param bestTrades used in recursion; the current list of best trades
  */
 func BestTradeExactOut(
-	pairs []*Pair,
+	pairs []Pair,
 	currencyIn *Token,
 	currencyAmountOut *TokenAmount,
 	options *BestTradeOptions,
 	// used in recursion.
-	currentPairs []*Pair,
+	currentPairs []Pair,
 	originalAmountOut *TokenAmount,
 	bestTrades []*Trade,
 ) (sortedItems []*Trade, err error) {
@@ -294,7 +294,7 @@ func BestTradeExactOut(
 		// we have arrived at the input token, so this is the first trade of one of the paths
 		if amountIn.Token.Equals(tokenIn) {
 			var route *Route
-			route, err = NewRoute(append([]*Pair{pair}, currentPairs...), currencyIn, originalAmountOut.Token)
+			route, err = NewRoute(append([]Pair{pair}, currentPairs...), currencyIn, originalAmountOut.Token)
 			if err != nil {
 				return nil, err
 			}
@@ -312,7 +312,7 @@ func BestTradeExactOut(
 
 		// otherwise, consider all the other paths that arrive at this token as long as we have not exceeded maxHops
 		if options.MaxHops > 1 && len(pairs) > 1 {
-			pairsExcludingThisPair := make([]*Pair, len(pairs)-1)
+			pairsExcludingThisPair := make([]Pair, len(pairs)-1)
 			copy(pairsExcludingThisPair, pairs[:i])
 			copy(pairsExcludingThisPair[i:], pairs[i+1:])
 			bestTrades, err = BestTradeExactOut(
@@ -320,7 +320,7 @@ func BestTradeExactOut(
 				currencyIn,
 				amountIn,
 				options.ReduceHops(),
-				append([]*Pair{pair}, currentPairs...),
+				append([]Pair{pair}, currentPairs...),
 				originalAmountOut,
 				bestTrades,
 			)

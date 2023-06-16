@@ -43,7 +43,7 @@ func TestTrade(t *testing.T) {
 	_ = empty_pair_0_1
 
 	{
-		route, _ := NewRoute([]*Pair{pair_weth_0}, tokenETHER, nil)
+		route, _ := NewRoute([]Pair{pair_weth_0}, tokenETHER, nil)
 		trade, _ := NewTrade(route, tokenAmountETHER, constants.ExactInput)
 
 		// can be constructed with ETHER as input
@@ -63,7 +63,7 @@ func TestTrade(t *testing.T) {
 		}
 
 		// can be constructed with ETHER as input for exact output
-		route, _ = NewRoute([]*Pair{pair_weth_0}, tokenETHER, token0)
+		route, _ = NewRoute([]Pair{pair_weth_0}, tokenETHER, token0)
 		trade, _ = NewTrade(route, tokenAmount_0_100, constants.ExactOutput)
 		{
 			expect := tokenETHER.Currency
@@ -80,7 +80,7 @@ func TestTrade(t *testing.T) {
 			}
 		}
 
-		route, _ = NewRoute([]*Pair{pair_weth_0}, token0, tokenETHER)
+		route, _ = NewRoute([]Pair{pair_weth_0}, token0, tokenETHER)
 		// can be constructed with ETHER as output
 		trade, _ = NewTrade(route, tokenAmountETHER, constants.ExactOutput)
 		{
@@ -118,7 +118,7 @@ func TestTrade(t *testing.T) {
 
 	// bestTradeExactIn
 	{
-		pairs := []*Pair{}
+		pairs := []Pair{}
 		_, output := BestTradeExactIn(pairs, tokenAmount_0_100, token2,
 			NewDefaultBestTradeOptions(), nil, tokenAmount_0_100, nil)
 		//throws with empty pairs
@@ -129,7 +129,7 @@ func TestTrade(t *testing.T) {
 			}
 		}
 
-		pairs = []*Pair{pair_0_2}
+		pairs = []Pair{pair_0_2}
 		_, output = BestTradeExactIn(pairs, tokenAmount_0_100, token2, &BestTradeOptions{},
 			nil, tokenAmount_0_100, nil)
 		// throws with max hops of 0
@@ -140,7 +140,7 @@ func TestTrade(t *testing.T) {
 			}
 		}
 
-		pairs = []*Pair{pair_0_1, pair_0_2, pair_1_2}
+		pairs = []Pair{pair_0_1, pair_0_2, pair_1_2}
 		result, _ := BestTradeExactIn(pairs, tokenAmount_0_100, token2,
 			NewDefaultBestTradeOptions(), nil, tokenAmount_0_100, nil)
 		// provides best route
@@ -203,7 +203,7 @@ func TestTrade(t *testing.T) {
 		// doesnt throw for zero liquidity pairs
 		// throws with max hops of 0
 		{
-			pairs := []*Pair{empty_pair_0_1}
+			pairs := []Pair{empty_pair_0_1}
 			results, err := BestTradeExactIn(pairs, tokenAmount_0_100, token1,
 				NewDefaultBestTradeOptions(), nil, tokenAmount_0_100, nil)
 			if err != nil {
@@ -313,7 +313,7 @@ func TestTrade(t *testing.T) {
 			}
 		}
 
-		pairs = []*Pair{pair_0_1, pair_0_3, pair_1_3}
+		pairs = []Pair{pair_0_1, pair_0_3, pair_1_3}
 		result, _ = BestTradeExactIn(pairs, tokenAmount, token2,
 			&BestTradeOptions{MaxNumResults: 1, MaxHops: 3}, nil, nil, nil)
 		// no path
@@ -325,7 +325,7 @@ func TestTrade(t *testing.T) {
 			}
 		}
 
-		pairs = []*Pair{pair_weth_0, pair_0_1, pair_0_3, pair_1_3}
+		pairs = []Pair{pair_weth_0, pair_0_1, pair_0_3, pair_1_3}
 		result, _ = BestTradeExactIn(pairs, tokenAmountETHER, token3,
 			nil, nil, nil, nil)
 		// works for ETHER currency input
@@ -427,7 +427,7 @@ func TestTrade(t *testing.T) {
 	// maximumAmountIn
 	{
 		// tradeType = EXACT_INPUT
-		route, _ := NewRoute([]*Pair{pair_0_1, pair_1_2}, token0, nil)
+		route, _ := NewRoute([]Pair{pair_0_1, pair_1_2}, token0, nil)
 		exactIn, _ := ExactIn(route, tokenAmount_0_100)
 
 		// throws if less than 0
@@ -520,7 +520,7 @@ func TestTrade(t *testing.T) {
 	// #minimumAmountOut
 	{
 		// tradeType = EXACT_INPUT
-		route, _ := NewRoute([]*Pair{pair_0_1, pair_1_2}, token0, nil)
+		route, _ := NewRoute([]Pair{pair_0_1, pair_1_2}, token0, nil)
 		exactIn, _ := ExactIn(route, tokenAmount_0_100)
 
 		// throws if less than 0
@@ -612,7 +612,7 @@ func TestTrade(t *testing.T) {
 
 	// #bestTradeExactOut
 	{
-		pairs := []*Pair{}
+		pairs := []Pair{}
 		tokenAmount_1_100, _ := NewTokenAmount(token1, big.NewInt(100))
 		tokenAmount_2_100, _ := NewTokenAmount(token2, big.NewInt(100))
 		_, output := BestTradeExactOut(pairs, token2, tokenAmount_2_100,
@@ -625,7 +625,7 @@ func TestTrade(t *testing.T) {
 			}
 		}
 
-		pairs = []*Pair{pair_0_2}
+		pairs = []Pair{pair_0_2}
 		_, output = BestTradeExactOut(pairs, token0, tokenAmount_2_100,
 			&BestTradeOptions{MaxNumResults: 3}, nil, nil, nil)
 		// throws with max hops of 0
@@ -636,7 +636,7 @@ func TestTrade(t *testing.T) {
 			}
 		}
 
-		pairs = []*Pair{pair_0_1, pair_0_2, pair_1_2}
+		pairs = []Pair{pair_0_1, pair_0_2, pair_1_2}
 		result, _ := BestTradeExactOut(pairs, token0, tokenAmount_2_100,
 			nil, nil, nil, nil)
 		// provides best route
@@ -698,7 +698,7 @@ func TestTrade(t *testing.T) {
 
 		// doesnt throw for zero liquidity pairs
 		{
-			pairs := []*Pair{empty_pair_0_1}
+			pairs := []Pair{empty_pair_0_1}
 			results, err := BestTradeExactOut(pairs, token1, tokenAmount_1_100,
 				nil, nil, nil, nil)
 			if err != nil {
@@ -786,7 +786,7 @@ func TestTrade(t *testing.T) {
 			}
 		}
 
-		pairs = []*Pair{pair_0_1, pair_0_3, pair_1_3}
+		pairs = []Pair{pair_0_1, pair_0_3, pair_1_3}
 		result, _ = BestTradeExactOut(pairs, token0, tokenAmount,
 			nil, nil, nil, nil)
 		// no path
@@ -798,7 +798,7 @@ func TestTrade(t *testing.T) {
 			}
 		}
 
-		pairs = []*Pair{pair_weth_0, pair_0_1, pair_0_3, pair_1_3}
+		pairs = []Pair{pair_weth_0, pair_0_1, pair_0_3, pair_1_3}
 		tokenAmount, _ = NewTokenAmount(token3, big.NewInt(100))
 		result, _ = BestTradeExactOut(pairs, tokenETHER, tokenAmount,
 			nil, nil, nil, nil)

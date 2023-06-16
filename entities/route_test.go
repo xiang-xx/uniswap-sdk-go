@@ -61,7 +61,7 @@ func TestRoute(t *testing.T) {
 
 	// constructs a path from the tokens
 	{
-		route, err := NewRoute([]*Pair{pair01}, token0, nil)
+		route, err := NewRoute([]Pair{pair01}, token0, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -84,7 +84,7 @@ func TestRoute(t *testing.T) {
 
 	// can have a token as both input and output
 	{
-		pairs := []*Pair{pair0Weth, pair01, pair1Weth}
+		pairs := []Pair{pair0Weth, pair01, pair1Weth}
 		route, err := NewRoute(pairs, weth, nil)
 		if err != nil {
 			t.Fatal(err)
@@ -107,7 +107,7 @@ func TestRoute(t *testing.T) {
 
 	{
 		// supports ether output
-		pairs := []*Pair{pair0Weth}
+		pairs := []Pair{pair0Weth}
 		route, err := NewRoute(pairs, token0, weth)
 		if err != nil {
 			t.Fatal(err)

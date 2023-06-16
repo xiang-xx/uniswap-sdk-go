@@ -73,7 +73,7 @@ func ExactOut(route *Route, amountOut *TokenAmount) (*Trade, error) {
 // nolint gocyclo
 func NewTrade(route *Route, amount *TokenAmount, tradeType constants.TradeType) (*Trade, error) {
 	amounts := make([]*TokenAmount, len(route.Path))
-	nextPairs := make([]*Pair, len(route.Pairs))
+	nextPairs := make([]Pair, len(route.Pairs))
 
 	if tradeType == constants.ExactInput {
 		if !route.Input.Currency.Equals(amount.Token.Currency) {

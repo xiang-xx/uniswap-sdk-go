@@ -42,12 +42,17 @@ var (
 	One   = big.NewInt(1)
 	Two   = big.NewInt(2)
 	Three = big.NewInt(3)
+	Four  = big.NewInt(4)
 	Five  = big.NewInt(5)
 	Ten   = big.NewInt(10)
 
 	B100  = big.NewInt(100)
 	B997  = big.NewInt(997)
 	B1000 = big.NewInt(1000)
+
+	B1999 = big.NewInt(1999)
+	B2000 = big.NewInt(2000)
+	B4000 = big.NewInt(4000)
 )
 
 type SolidityType string

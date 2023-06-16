@@ -251,7 +251,7 @@ func TestPair(t *testing.T) {
 			tokenAmountB, _ := NewTokenAmount(tokenB, big.NewInt(0))
 			pair, _ := NewPair(tokenAmountA, tokenAmountB)
 			{
-				tokenAmount, _ := NewTokenAmount(pair.LiquidityToken, big.NewInt(0))
+				tokenAmount, _ := NewTokenAmount(pair.GetLiquidityToken(), big.NewInt(0))
 				tokenAmountA, _ := NewTokenAmount(tokenA, big.NewInt(1000))
 				tokenAmountB, _ := NewTokenAmount(tokenB, big.NewInt(1000))
 				// getLiquidityMinted:0
@@ -285,7 +285,7 @@ func TestPair(t *testing.T) {
 			tokenAmountB, _ = NewTokenAmount(tokenB, big.NewInt(10000))
 			pair, _ = NewPair(tokenAmountA, tokenAmountB)
 			{
-				tokenAmount, _ := NewTokenAmount(pair.LiquidityToken, big.NewInt(10000))
+				tokenAmount, _ := NewTokenAmount(pair.GetLiquidityToken(), big.NewInt(10000))
 				tokenAmountA, _ = NewTokenAmount(tokenA, big.NewInt(2000))
 				tokenAmountB, _ = NewTokenAmount(tokenB, big.NewInt(2000))
 				expect := "2000"
@@ -300,8 +300,8 @@ func TestPair(t *testing.T) {
 			tokenAmountA, _ = NewTokenAmount(tokenA, big.NewInt(1000))
 			tokenAmountB, _ = NewTokenAmount(tokenB, big.NewInt(1000))
 			pair, _ = NewPair(tokenAmountA, tokenAmountB)
-			tokenAmount, _ := NewTokenAmount(pair.LiquidityToken, big.NewInt(1000))
-			tokenAmount500, _ := NewTokenAmount(pair.LiquidityToken, big.NewInt(500))
+			tokenAmount, _ := NewTokenAmount(pair.GetLiquidityToken(), big.NewInt(1000))
+			tokenAmount500, _ := NewTokenAmount(pair.GetLiquidityToken(), big.NewInt(500))
 			{
 				liquidityValue, _ := pair.GetLiquidityValue(tokenA, tokenAmount, tokenAmount, false, nil)
 				{
