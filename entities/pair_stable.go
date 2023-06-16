@@ -170,18 +170,53 @@ func (p *StablePair) GetInputAmount(outputAmount *TokenAmount) (*TokenAmount, Pa
 		return nil, nil, err
 	}
 
-	numerator := big.NewInt(0).Mul(inputReserve.Raw(), outputAmount.Raw())
-	numerator.Mul(numerator, p.feeBase)
-	denominator := big.NewInt(0).Sub(outputReserve.Raw(), outputAmount.Raw())
-	denominator.Mul(denominator, new(big.Int).Sub(p.feeBase, p.fee))
-	amount := big.NewInt(0).Div(numerator, denominator)
-	amount.Add(amount, constants.One)
-	inputAmount, err := NewTokenAmount(token, amount)
+	_adjustedReserve0 := new(big.Int).Mul(p.Reserve0().Raw(), p.multiplierA)
+	_adjustedReserve1 := new(big.Int).Mul(p.Reserve1().Raw(), p.multiplierB)
+	_d := utils.ComputeDFromAdjustedBalances(_adjustedReserve0, _adjustedReserve1)
+
+	var inputAmount *big.Int
+	if outputAmount.Token.Equals(p.Token0()) {
+		_y := new(big.Int).Sub(
+			_adjustedReserve0,
+			new(big.Int).Mul(outputAmount.Raw(), p.multiplierA),
+		)
+		if _y.Cmp(constants.One) <= 0 {
+			inputAmount = constants.One
+		} else {
+			_x := utils.GetY(_y, _d)
+			inputAmount = new(big.Int).Add(constants.One,
+				new(big.Int).Div(
+					new(big.Int).Mul(p.feeBase, new(big.Int).Sub(_x, _adjustedReserve1)),
+					new(big.Int).Sub(p.feeBase, p.fee),
+				),
+			)
+			inputAmount = new(big.Int).Div(inputAmount, p.multiplierB)
+		}
+	} else {
+		_y := new(big.Int).Sub(
+			_adjustedReserve1,
+			new(big.Int).Mul(outputAmount.Raw(), p.multiplierB),
+		)
+		if _y.Cmp(constants.One) <= 0 {
+			inputAmount = constants.One
+		} else {
+			_x := utils.GetY(_y, _d)
+			inputAmount = new(big.Int).Add(constants.One,
+				new(big.Int).Div(
+					new(big.Int).Mul(p.feeBase, new(big.Int).Sub(_x, _adjustedReserve0)),
+					new(big.Int).Sub(p.feeBase, p.fee),
+				),
+			)
+			inputAmount = new(big.Int).Div(inputAmount, p.multiplierA)
+		}
+	}
+
+	inputTokenAmount, err := NewTokenAmount(token, inputAmount)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	tokenAmountA, err := inputAmount.Add(inputReserve)
+	tokenAmountA, err := inputTokenAmount.Add(inputReserve)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -193,7 +228,7 @@ func (p *StablePair) GetInputAmount(outputAmount *TokenAmount) (*TokenAmount, Pa
 	if err != nil {
 		return nil, nil, err
 	}
-	return inputAmount, pair, nil
+	return inputTokenAmount, pair, nil
 }
 
 // GetLiquidityMinted returns liquidity minted TokenAmount
