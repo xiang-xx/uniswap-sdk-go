@@ -8,7 +8,7 @@ import (
 
 func GetY(x, d *big.Int) *big.Int {
 	// c = (d * d) / (x * 2);
-	c := mulDiv(d, d, mulUnsafeFirst(constants.Two, x))
+	c := mulDiv(d, d, mul(constants.Two, x))
 	//c = (c * d) / 4000;
 	c = mulDiv(c, d, constants.B4000)
 
@@ -28,7 +28,7 @@ func GetY(x, d *big.Int) *big.Int {
 			),
 			new(big.Int).Sub(
 				new(big.Int).Add(
-					mulUnsafeFirst(constants.Two, y),
+					mul(constants.Two, y),
 					b,
 				),
 				d,
@@ -64,9 +64,9 @@ func ComputeDFromAdjustedBalances(xp0, xp1 *big.Int) *big.Int {
 			//d = (((2000 * s) + 2 * dP) * d) / ((2000 - 1) * d + 3 * dP);
 			d = mulDiv(
 				// `s` cannot be zero and this value will never be zero.
-				add(mulUnsafeFirst(constants.B2000, s), mulUnsafeFirst(constants.Two, dP)),
+				add(mul(constants.B2000, s), mul(constants.Two, dP)),
 				d,
-				add(mulUnsafeFirst(constants.B1999, d), mulUnsafeFirst(constants.Three, dP)),
+				add(mul(constants.B1999, d), mul(constants.Three, dP)),
 			)
 
 			if within1(d, prevD) {

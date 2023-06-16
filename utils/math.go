@@ -23,10 +23,6 @@ func mulDiv(x, y, denominator *big.Int) *big.Int {
 	return div(mul(x, y), denominator)
 }
 
-func mulUnsafeFirst(x, y *big.Int) *big.Int {
-	panic("not implement")
-}
-
 func add(x, y *big.Int) *big.Int {
 	return new(big.Int).Add(x, y)
 }
