@@ -54,22 +54,17 @@ func BestSmartTradeExactIn(
 	queue := make([]tradesWithPercent, 0)
 	for i, percent := range percents {
 		trades, ok := percentToTrades[percent]
-		if !ok {
+		if !ok || len(trades) == 0 {
 			continue
 		}
 
-		for j := range trades {
-			if j >= 2 {
-				break
-			}
-			queue = append(queue, tradesWithPercent{
-				RemainPercent: 100 - percent,
-				PercentIndex:  i,
-				Percents:      []int{percent},
-				Trades:        []*Trade{trades[j]},
-				CurrentPairs:  trades[j].Route.Pairs,
-			})
-		}
+		queue = append(queue, tradesWithPercent{
+			RemainPercent: 100 - percent,
+			PercentIndex:  i,
+			Percents:      []int{percent},
+			Trades:        []*Trade{trades[0]},
+			CurrentPairs:  trades[0].Route.Pairs,
+		})
 	}
 
 	split := 0
