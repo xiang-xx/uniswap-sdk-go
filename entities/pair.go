@@ -106,5 +106,6 @@ type Pair interface {
 	Token1() *Token
 	Token1Price() *Price
 	PairType() PairType
+	Equal(p Pair) bool
 	GetLiquidityToken() *Token
 }

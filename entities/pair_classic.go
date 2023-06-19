@@ -64,6 +64,10 @@ func (p *basePair) GetAddress() common.Address {
 	return _PairAddressCache.GetAddress(p.TokenAmounts[0].Token.Address, p.TokenAmounts[1].Token.Address)
 }
 
+func (p *basePair) Equal(p1 Pair) bool {
+	return p.Token0().Equals(p1.Token0()) && p.Token1().Equals(p1.Token1())
+}
+
 // InvolvesToken Returns true if the token is either token0 or token1
 // @param token to check
 func (p *basePair) InvolvesToken(token *Token) bool {
