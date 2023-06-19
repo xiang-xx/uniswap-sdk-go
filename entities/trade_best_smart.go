@@ -73,7 +73,7 @@ func BestSmartTradeExactIn(
 	}
 
 	split := 0
-	for split <= options.MaxSplit {
+	for split < options.MaxSplit {
 		split++
 
 		nextQueue := make([]tradesWithPercent, 0)
@@ -99,7 +99,7 @@ func BestSmartTradeExactIn(
 
 				if remainPerent == 0 {
 					outputAmount := currentTrades[0].OutputAmount()
-					for k := 1; k < len(currentTrades); i++ {
+					for k := 1; k < len(currentTrades); k++ {
 						outputAmount, err = outputAmount.Add(currentTrades[k].OutputAmount())
 						if err != nil {
 							return nil, err
@@ -121,6 +121,7 @@ func BestSmartTradeExactIn(
 				}
 			}
 		}
+		queue = nextQueue
 	}
 
 	sort.Slice(smartTrades, func(i, j int) bool {
