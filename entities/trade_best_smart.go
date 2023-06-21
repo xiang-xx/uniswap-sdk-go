@@ -2,7 +2,6 @@ package entities
 
 import (
 	"math/big"
-	"sort"
 
 	"github.com/xiang-xx/uniswap-sdk-go/constants"
 )
@@ -16,6 +15,9 @@ type BestSmartTradeOptions struct {
 
 	// maximum count to split inAmount
 	MaxSplit int
+
+	// how many results to return
+	MaxSmartTradeNumResults int
 }
 
 func BestSmartTradeExactIn(
@@ -94,17 +96,27 @@ func BestSmartTradeExactIn(
 
 				if remainPerent == 0 {
 					outputAmount := currentTrades[0].OutputAmount()
+					inputAmount := currentTrades[0].InputAmount()
 					for k := 1; k < len(currentTrades); k++ {
 						outputAmount, err = outputAmount.Add(currentTrades[k].OutputAmount())
 						if err != nil {
 							return nil, err
 						}
+						inputAmount, err = inputAmount.Add(currentTrades[k].InputAmount())
+						if err != nil {
+							return nil, err
+						}
 					}
-					smartTrades = append(smartTrades, &SmartTrade{
+					smartTrade := &SmartTrade{
 						Percents:     currentPercents,
 						Trades:       currentTrades,
-						OutputAmount: outputAmount,
-					})
+						outputAmount: outputAmount,
+						inputAmount:  inputAmount,
+					}
+					smartTrades, _, err = SortedInsert(smartTrades, smartTrade, options.MaxSmartTradeNumResults, SmartTradeComparator)
+					if err != nil {
+						return nil, err
+					}
 				} else {
 					nextQueue = append(nextQueue, tradesWithPercent{
 						Percents:      currentPercents,
@@ -118,10 +130,6 @@ func BestSmartTradeExactIn(
 		}
 		queue = nextQueue
 	}
-
-	sort.Slice(smartTrades, func(i, j int) bool {
-		return smartTrades[i].OutputAmount.GreaterThan(smartTrades[j].OutputAmount.Fraction)
-	})
 
 	return smartTrades, nil
 }
@@ -178,4 +186,9 @@ func getAmountDistribution(currencyAmountOut *TokenAmount, splitPercentage int) 
 		})
 	}
 	return percents, amounts, nil
+}
+
+// extension of the input output comparator that also considers other dimensions of the trade in ranking them
+func SmartTradeComparator(a, b *SmartTrade) int {
+	return InputOutputComparator(a, b)
 }

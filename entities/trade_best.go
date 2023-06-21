@@ -86,7 +86,7 @@ func TradeComparator(a, b *Trade) int {
 
 // given an array of items sorted by `comparator`, insert an item into its sort index and constrain the size to
 // `maxSize` by removing the last item
-func SortedInsert(items []*Trade, add *Trade, maxSize int, comparator func(a, b *Trade) int) (sortedItems []*Trade, pop *Trade, err error) {
+func SortedInsert[T *Trade | *SmartTrade](items []T, add T, maxSize int, comparator func(a, b T) int) (sortedItems []T, pop T, err error) {
 	if maxSize <= 0 {
 		panic("MAX_SIZE_ZERO")
 	}
@@ -118,7 +118,7 @@ func SortedInsert(items []*Trade, add *Trade, maxSize int, comparator func(a, b 
 		}
 	}
 
-	items = append(items[:lo], append([]*Trade{add}, items[lo:]...)...)
+	items = append(items[:lo], append([]T{add}, items[lo:]...)...)
 	if isFull {
 		pop = items[itemsLen]
 		items = items[:itemsLen]

@@ -5,7 +5,16 @@ type SmartTrade struct {
 	Percents []int
 	Trades   []*Trade
 
-	OutputAmount *TokenAmount
+	inputAmount  *TokenAmount
+	outputAmount *TokenAmount
+}
+
+func (t *SmartTrade) InputAmount() *TokenAmount {
+	return t.inputAmount
+}
+
+func (t *SmartTrade) OutputAmount() *TokenAmount {
+	return t.outputAmount
 }
 
 type tradesWithPercent struct {
