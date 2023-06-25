@@ -11,6 +11,8 @@ type basePair struct {
 	LiquidityToken *Token
 	// sorted tokens
 	TokenAmounts
+
+	PairAddress common.Address
 }
 
 // ClassicPair wraps uniswap pair
@@ -61,7 +63,11 @@ func NewPairWithFee(tokenAmountA, tokenAmountB *TokenAmount, fee uint64, feeBase
 
 // GetAddress returns a contract's address for a pair
 func (p *basePair) GetAddress() common.Address {
-	return _PairAddressCache.GetAddress(p.TokenAmounts[0].Token.Address, p.TokenAmounts[1].Token.Address)
+	if len(p.PairAddress) == 0 {
+		return _PairAddressCache.GetAddress(p.TokenAmounts[0].Token.Address, p.TokenAmounts[1].Token.Address)
+	} else {
+		return p.PairAddress
+	}
 }
 
 func (p *basePair) Equal(p1 Pair) bool {
