@@ -60,13 +60,26 @@ func BestSmartTradeExactIn(
 			continue
 		}
 
-		queue = append(queue, tradesWithPercent{
-			RemainPercent: 100 - percent,
-			PercentIndex:  i,
-			Percents:      []int{percent},
-			Trades:        []*Trade{trades[0]},
-			CurrentPairs:  trades[0].Route.Pairs,
-		})
+		if percent == 100 {
+			smartTrade := &SmartTrade{
+				Percents:     []int{100},
+				Trades:       []*Trade{trades[0]},
+				outputAmount: trades[0].outputAmount,
+				inputAmount:  trades[0].inputAmount,
+			}
+			smartTrades, _, err = SortedInsert(smartTrades, smartTrade, options.MaxSmartTradeNumResults, SmartTradeComparator)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			queue = append(queue, tradesWithPercent{
+				RemainPercent: 100 - percent,
+				PercentIndex:  i,
+				Percents:      []int{percent},
+				Trades:        []*Trade{trades[0]},
+				CurrentPairs:  trades[0].Route.Pairs,
+			})
+		}
 	}
 
 	split := 0
