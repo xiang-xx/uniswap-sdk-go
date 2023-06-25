@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"errors"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -58,18 +59,34 @@ func (p *PairBuilder) SetTokenMultiplier(multiplierA, multiplierB *big.Int) *Pai
 }
 
 func (p *PairBuilder) Build() (Pair, error) {
+	if nil == p.tokenAmountA || nil == p.tokenAmountB {
+		return nil, errors.New("token amount not set")
+	}
 	tokenAmounts, err := NewTokenAmounts(p.tokenAmountA, p.tokenAmountB)
 	if err != nil {
 		return nil, err
 	}
+
+	// set default fee 3/1000
+	fee := p.fee
+	feeBase := p.feeBase
+	var (
+		feeBI     *big.Int
+		feeBaseBI *big.Int
+	)
+	if fee == 0 && feeBase == 0 {
+		feeBI = constants.Three
+		feeBaseBI = constants.B1000
+	}
+
 	if p.multiplierA == nil || p.multiplierB == nil || (p.multiplierA.Uint64() == 1 && p.multiplierB.Uint64() == 1) {
 		pair := &ClassicPair{
 			basePair: basePair{
 				TokenAmounts: tokenAmounts,
 				PairAddress:  p.pairAddress,
 			},
-			fee:     big.NewInt(int64(p.fee)),
-			feeBase: big.NewInt(int64(p.feeBase)),
+			fee:     feeBI,
+			feeBase: feeBaseBI,
 		}
 		pair.LiquidityToken, err = NewToken(p.tokenAmountA.Token.ChainID, pair.GetAddress(),
 			constants.Decimals18, constants.Univ2Symbol, constants.Univ2Name)
@@ -82,8 +99,8 @@ func (p *PairBuilder) Build() (Pair, error) {
 			},
 			multiplierA: p.multiplierA,
 			multiplierB: p.multiplierB,
-			fee:         big.NewInt(int64(p.fee)),
-			feeBase:     big.NewInt(int64(p.feeBase)),
+			fee:         feeBI,
+			feeBase:     feeBaseBI,
 		}
 		pair.LiquidityToken, err = NewToken(p.tokenAmountA.Token.ChainID, pair.GetAddress(),
 			constants.Decimals18, constants.Univ2Symbol, constants.Univ2Name)
