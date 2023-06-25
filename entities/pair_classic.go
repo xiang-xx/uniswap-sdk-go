@@ -150,6 +150,24 @@ func (p *ClassicPair) PairType() PairType {
 	return Classic
 }
 
+func (p *ClassicPair) Copy(tokenAmountA, tokenAmountB *TokenAmount) (Pair, error) {
+	tokenAmounts, err := NewTokenAmounts(tokenAmountA, tokenAmountB)
+	if err != nil {
+		return nil, err
+	}
+
+	pair := &ClassicPair{
+		basePair: basePair{
+			TokenAmounts:   tokenAmounts,
+			PairAddress:    p.PairAddress,
+			LiquidityToken: p.LiquidityToken,
+		},
+		fee:     p.fee,
+		feeBase: p.feeBase,
+	}
+	return pair, err
+}
+
 // GetOutputAmount returns OutputAmount and a Pair for the InputAmout
 func (p *ClassicPair) GetOutputAmount(inputAmount *TokenAmount) (*TokenAmount, Pair, error) {
 	if !p.InvolvesToken(inputAmount.Token) {
@@ -193,7 +211,7 @@ func (p *ClassicPair) GetOutputAmount(inputAmount *TokenAmount) (*TokenAmount, P
 	if err != nil {
 		return nil, nil, err
 	}
-	pair, err := NewPair(tokenAmountA, tokenAmountB)
+	pair, err := p.Copy(tokenAmountA, tokenAmountB)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -244,7 +262,7 @@ func (p *ClassicPair) GetInputAmount(outputAmount *TokenAmount) (*TokenAmount, P
 	if err != nil {
 		return nil, nil, err
 	}
-	pair, err := NewPair(tokenAmountA, tokenAmountB)
+	pair, err := p.Copy(tokenAmountA, tokenAmountB)
 	if err != nil {
 		return nil, nil, err
 	}

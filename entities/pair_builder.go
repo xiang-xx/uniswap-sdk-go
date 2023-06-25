@@ -77,9 +77,13 @@ func (p *PairBuilder) Build() (Pair, error) {
 	if fee == 0 && feeBase == 0 {
 		feeBI = constants.Three
 		feeBaseBI = constants.B1000
+	} else {
+		feeBI = big.NewInt(int64(fee))
+		feeBaseBI = big.NewInt(int64(feeBase))
 	}
 
-	if p.multiplierA == nil || p.multiplierB == nil || (p.multiplierA.Uint64() == 1 && p.multiplierB.Uint64() == 1) {
+	if p.multiplierA == nil || p.multiplierB == nil ||
+		(p.multiplierA.Uint64() <= 1 && p.multiplierB.Uint64() <= 1) {
 		pair := &ClassicPair{
 			basePair: basePair{
 				TokenAmounts: tokenAmounts,
