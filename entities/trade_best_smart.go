@@ -14,6 +14,7 @@ type BestSmartTradeOptions struct {
 	SplitPercentage int
 
 	// maximum count to split inAmount
+	// 0,1 means no split, 2 means split as two part
 	MaxSplit int
 
 	// how many results to return
@@ -82,7 +83,7 @@ func BestSmartTradeExactIn(
 		}
 	}
 
-	split := 0
+	split := 1
 	for split < options.MaxSplit {
 		split++
 
